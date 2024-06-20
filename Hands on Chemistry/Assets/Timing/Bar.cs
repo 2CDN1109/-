@@ -12,42 +12,38 @@ public class TimingGame : MonoBehaviour
     public delegate void GameEndedCallback(bool success);
     public GameEndedCallback OnGameEnded;
 
-    // 追加：関連するオブジェクト
     public GameObject meter;
     public GameObject hitZone;
-
-    // 追加：成功音のオーディオソース
     public AudioSource successAudioSource;
 
-    // Game2とGame3用のフラグ
     public bool isGame2 = false;
     public bool isGame3 = false;
 
-    // ヒット判定の範囲（例として初期値を -0.7f から 0.7f に設定）
     private float hitRangeMin = -0.7f;
     private float hitRangeMax = 0.7f;
 
     void Start()
     {
-        initialPosition = transform.position; // 初期位置を記憶
+        initialPosition = transform.position;
 
-        // Game2の場合、移動速度と方向を調整
+        if (successAudioSource == null)
+        {
+            Debug.LogError("SuccessAudioSource is not set in " + gameObject.name);
+        }
+
         if (isGame2)
         {
-            moveSpeed = 3.0f; // 例として移動速度を3.0に設定
-            direction = -1; // 例として逆方向に移動
-            // Game2用のヒット判定範囲を設定する場合
+            moveSpeed = 3.0f;
+            direction = -1;
             hitRangeMin = -2.4f;
             hitRangeMax = -1.0f;
         }
-        // Game3の場合、移動速度とヒット判定範囲を調整
         else if (isGame3)
         {
-            moveSpeed = 1.5f; // 例として移動速度を1.5に設定
-            direction = 1; // 例として通常方向に移動
-            // Game3用のヒット判定範囲を設定する場合
+            moveSpeed = 1.5f;
+            direction = 1;
             hitRangeMin = 1.0f;
-            hitRangeMax = 2.0f;
+            hitRangeMax = 2.4f;
         }
     }
 
@@ -71,7 +67,10 @@ public class TimingGame : MonoBehaviour
             if (transform.position.y >= hitRangeMin && transform.position.y <= hitRangeMax)
             {
                 Debug.Log("Hit");
-                successAudioSource.Play(); // 成功音を再生
+                if (successAudioSource != null)
+                {
+                    successAudioSource.Play();
+                }
                 EndGame(true);
             }
             else
@@ -85,8 +84,8 @@ public class TimingGame : MonoBehaviour
     public void StartGame()
     {
         isGameActive = true;
-        transform.position = initialPosition; // 初期位置にリセット
-        SetGameObjectsActive(true); // ゲーム関連のオブジェクトをアクティブに
+        transform.position = initialPosition;
+        SetGameObjectsActive(true);
         Debug.Log(gameObject.name + " has started.");
     }
 
@@ -94,17 +93,11 @@ public class TimingGame : MonoBehaviour
     {
         isGameActive = false;
         Debug.Log(gameObject.name + " is ending.");
-        SetGameObjectsActive(false); // ゲーム関連のオブジェクトを非表示に
+        SetGameObjectsActive(false);
         OnGameEnded?.Invoke(success);
     }
 
-    private void RetryGame()
-    {
-        // ゲームをリトライする処理
-        StartGame(); // ゲームを再開する
-    }
-
-    public void SetGameObjectsActive(bool isActive) // メソッドをpublicに変更
+    public void SetGameObjectsActive(bool isActive)
     {
         gameObject.SetActive(isActive);
         if (meter != null) meter.SetActive(isActive);
