@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class TimingGame : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class TimingGame : MonoBehaviour
 
     private float hitRangeMin = -0.7f;
     private float hitRangeMax = 0.7f;
+
+    private SerialHandler serialHandler;
 
     void Start()
     {
@@ -45,6 +48,17 @@ public class TimingGame : MonoBehaviour
             hitRangeMin = 1.0f;
             hitRangeMax = 2.4f;
         }
+
+        // シリアルハンドラーのセットアップ
+        serialHandler = FindObjectOfType<SerialHandler>();
+        if (serialHandler != null)
+        {
+            serialHandler.OnMessageReceived.Subscribe(OnSerialMessageReceived);
+        }
+        else
+        {
+            Debug.LogError("SerialHandler not found.");
+        }
     }
 
     void FixedUpdate()
@@ -64,20 +78,34 @@ public class TimingGame : MonoBehaviour
     {
         if (isGameActive && Input.GetKeyUp(KeyCode.Space))
         {
-            if (transform.position.y >= hitRangeMin && transform.position.y <= hitRangeMax)
+            CheckHit();
+        }
+    }
+
+    void OnSerialMessageReceived(string message)
+    {
+        // スイッチが押された（値が0になった）場合にヒットをチェック
+        if (isGameActive && message.Trim() == "BUTTON_PRESSED")
+        {
+            CheckHit();
+        }
+    }
+
+    private void CheckHit()
+    {
+        if (transform.position.y >= hitRangeMin && transform.position.y <= hitRangeMax)
+        {
+            Debug.Log("Hit");
+            if (successAudioSource != null)
             {
-                Debug.Log("Hit");
-                if (successAudioSource != null)
-                {
-                    successAudioSource.Play();
-                }
-                EndGame(true);
+                successAudioSource.Play();
             }
-            else
-            {
-                Debug.Log("Miss");
-                EndGame(false);
-            }
+            EndGame(true);
+        }
+        else
+        {
+            Debug.Log("Miss");
+            EndGame(false);
         }
     }
 
@@ -85,9 +113,10 @@ public class TimingGame : MonoBehaviour
     {
         isGameActive = true;
         transform.position = initialPosition;
-        SetGameObjectsActive(true);
+        SetGameObjectsActive(true); // ゲームオブジェクトをアクティブにする
         Debug.Log(gameObject.name + " has started.");
     }
+
 
     private void EndGame(bool success)
     {

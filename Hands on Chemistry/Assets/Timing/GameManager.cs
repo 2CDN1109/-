@@ -53,10 +53,16 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RetryCurrentGame()
     {
-        yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.Space));
-        timingGames[currentGameIndex].SetGameObjectsActive(true);
+        Debug.Log("RetryCurrentGame called for game index: " + currentGameIndex);
+
+        // ここで任意の待機時間を設定します（例: 3秒）
+        yield return new WaitForSeconds(1f);
+
+        // 現在のゲームをリトライ
         timingGames[currentGameIndex].StartGame();
     }
+
+
 
     void ShowClearImage()
     {
