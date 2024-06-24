@@ -47,9 +47,14 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            if (timingGames[currentGameIndex].failureAudioSource != null)
+            {
+                timingGames[currentGameIndex].failureAudioSource.Play();
+            }
             StartCoroutine(RetryCurrentGame());
         }
     }
+
 
     IEnumerator RetryCurrentGame()
     {

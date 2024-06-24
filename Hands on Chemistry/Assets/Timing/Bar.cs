@@ -16,6 +16,8 @@ public class TimingGame : MonoBehaviour
     public GameObject meter;
     public GameObject hitZone;
     public AudioSource successAudioSource;
+    public AudioSource failureAudioSource;
+
 
     public bool isGame2 = false;
     public bool isGame3 = false;
@@ -36,17 +38,17 @@ public class TimingGame : MonoBehaviour
 
         if (isGame2)
         {
-            moveSpeed = 3.0f;
-            direction = -1;
-            hitRangeMin = -2.4f;
-            hitRangeMax = -1.0f;
+            moveSpeed = 4.0f;
+            direction = 1;
+            hitRangeMin = -2.5f;
+            hitRangeMax = -1.2f;
         }
         else if (isGame3)
         {
-            moveSpeed = 1.5f;
+            moveSpeed = 6.5f;
             direction = 1;
             hitRangeMin = 1.0f;
-            hitRangeMax = 2.4f;
+            hitRangeMax = 1.4f;
         }
 
         // シリアルハンドラーのセットアップ
