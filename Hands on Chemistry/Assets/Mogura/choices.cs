@@ -164,6 +164,7 @@ public class choices : MonoBehaviour
                 Time.timeScale = 0;
                 BGM.Stop();
                 Debug.Log("問題終了");
+                
             }
         }
         else if (Problem.Count == index)
@@ -172,6 +173,8 @@ public class choices : MonoBehaviour
             Debug.Log("終了!!!!");
             Result.SetActive(true);
             BGM.Stop();
+            Invoke("ChangeScene", 2.0f); // 2.0秒後に HideJudgment メソッドを呼び出す
+
         }
     }
 
@@ -251,6 +254,13 @@ public class choices : MonoBehaviour
         CorrectRate.text = Ratenum;
         CorrectNum.text = correctNum;
     }
+
+
+    void ChangeScene()
+    {
+        SceneManager.LoadScene("TimingGame");
+    }
+
 
     void HideJudgment()
     {
