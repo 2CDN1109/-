@@ -38,7 +38,7 @@ public class choices : MonoBehaviour
 
 
     public Image ImageCursor; // カーソルとして使う画像（枠）
-    private int selectedIndex = 0;
+//    private int selectedIndex = 0;
 
 
     void Start()
