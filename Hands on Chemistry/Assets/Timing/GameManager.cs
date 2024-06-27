@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // 追加: UIを操作するために必要
+using TMPro; // TextMeshProを使用するために追加
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public List<TimingGame> timingGames;
     private int currentGameIndex = 0;
 
-    // 追加: クリア画像を表示するためのImageオブジェクト
     public Image clearImage;
+    public Transform capsule; // カプセルオブジェクトのTransformを設定
+    public TMP_Text gameDescriptionText; // TextMeshProのテキスト
+    public TMP_Text countdownText; // カウントダウン表示用のTextMeshProテキスト
 
     void Start()
     {
@@ -18,6 +21,54 @@ public class GameManager : MonoBehaviour
             game.OnGameEnded = OnGameEnded;
             game.SetGameObjectsActive(false);
         }
+        ShowGameDescription();
+    }
+
+    void ShowGameDescription()
+    {
+        if (gameDescriptionText != null)
+        {
+            gameDescriptionText.gameObject.SetActive(true);
+            gameDescriptionText.text = "ゲームの説明...\nスペースキーを押してゲームを開始";
+
+            StartCoroutine(WaitForSpaceKey());
+        }
+        else
+        {
+            Debug.LogError("Game description text is not set in the GameManager.");
+        }
+    }
+
+    IEnumerator WaitForSpaceKey()
+    {
+        while (!Input.GetKeyDown(KeyCode.Space))
+        {
+            yield return null;
+        }
+
+        if (gameDescriptionText != null)
+        {
+            gameDescriptionText.gameObject.SetActive(false);
+        }
+
+        StartCoroutine(CountdownAndStartGame());
+    }
+
+    IEnumerator CountdownAndStartGame()
+    {
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(true);
+            for (int i = 3; i > 0; i--)
+            {
+                countdownText.text = i.ToString();
+                yield return new WaitForSeconds(1f);
+            }
+            countdownText.text = "スタート！";
+            yield return new WaitForSeconds(1f);
+            countdownText.gameObject.SetActive(false);
+        }
+
         StartNextGame();
     }
 
@@ -31,7 +82,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("All games completed!");
-            ShowClearImage(); // 追加: すべてのゲームが完了したらクリア画像を表示
+            ShowClearImage();
         }
     }
 
@@ -43,7 +94,7 @@ public class GameManager : MonoBehaviour
         if (success)
         {
             currentGameIndex++;
-            StartNextGame();
+            StartCoroutine(AnimateCapsuleAndStartNextGame());
         }
         else
         {
@@ -55,29 +106,48 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     IEnumerator RetryCurrentGame()
     {
         Debug.Log("RetryCurrentGame called for game index: " + currentGameIndex);
-
-        // ここで任意の待機時間を設定します（例: 3秒）
         yield return new WaitForSeconds(1f);
-
-        // 現在のゲームをリトライ
         timingGames[currentGameIndex].StartGame();
     }
-
-
 
     void ShowClearImage()
     {
         if (clearImage != null)
         {
-            clearImage.gameObject.SetActive(true); // クリア画像を表示
+            clearImage.gameObject.SetActive(true);
         }
         else
         {
             Debug.LogError("Clear image is not set in the GameManager.");
         }
+    }
+
+    IEnumerator AnimateCapsuleAndStartNextGame()
+    {
+        if (capsule != null)
+        {
+            // カプセルを左右に動かすアニメーション
+            Vector3 startPosition = capsule.position;
+            Vector3 leftPosition = startPosition + Vector3.left * 0.1f;
+            Vector3 rightPosition = startPosition + Vector3.right * 1.8f;
+
+            float animationDuration = 1.0f;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < animationDuration)
+            {
+                float t = elapsedTime / animationDuration;
+                capsule.position = Vector3.Lerp(leftPosition, rightPosition, Mathf.PingPong(t * 2, 1));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            capsule.position = startPosition;
+        }
+
+        StartNextGame();
     }
 }
