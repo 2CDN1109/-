@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // TextMeshProを使用するために追加
+using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,9 +12,11 @@ public class GameManager : MonoBehaviour
     private int currentGameIndex = 0;
 
     public Image clearImage;
-    public Transform capsule; // カプセルオブジェクトのTransformを設定
-    public TMP_Text gameDescriptionText; // TextMeshProのテキスト
-    public TMP_Text countdownText; // カウントダウン表示用のTextMeshProテキスト
+    public Transform capsule;
+    public TMP_Text gameDescriptionText;
+    public TMP_Text countdownText;
+    public TMP_Text afterClearText; // ゲームクリア後のテキスト表示用
+    public VideoPlayer videoPlayer; // VideoPlayerの参照
 
     void Start()
     {
@@ -29,7 +33,7 @@ public class GameManager : MonoBehaviour
         if (gameDescriptionText != null)
         {
             gameDescriptionText.gameObject.SetActive(true);
-            gameDescriptionText.text = "ゲームの説明...\nスペースキーを押してゲームを開始";
+            gameDescriptionText.text = "赤いエリアで　　　　　　　　タイミングよくボタンを押して材料を粉砕しよう！";
 
             StartCoroutine(WaitForSpaceKey());
         }
@@ -83,6 +87,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("All games completed!");
             ShowClearImage();
+            StartCoroutine(WaitForSpaceKeyToShowText());
         }
     }
 
@@ -129,7 +134,6 @@ public class GameManager : MonoBehaviour
     {
         if (capsule != null)
         {
-            // カプセルを左右に動かすアニメーション
             Vector3 startPosition = capsule.position;
             Vector3 leftPosition = startPosition + Vector3.left * 0.1f;
             Vector3 rightPosition = startPosition + Vector3.right * 1.8f;
@@ -149,5 +153,46 @@ public class GameManager : MonoBehaviour
         }
 
         StartNextGame();
+    }
+
+    IEnumerator WaitForSpaceKeyToShowText()
+    {
+        if (clearImage != null)
+        {
+            clearImage.gameObject.SetActive(false); // ゲームクリア画像を非表示
+        }
+
+        if (afterClearText != null)
+        {
+            afterClearText.gameObject.SetActive(true);
+            afterClearText.text = "決定ボタンで次に進む";
+
+            while (!Input.GetKeyDown(KeyCode.Space))
+            {
+                yield return null;
+            }
+
+            afterClearText.gameObject.SetActive(false); // テキストを非表示
+        }
+        else
+        {
+            Debug.LogError("After clear text is not set in the GameManager.");
+        }
+
+        if (videoPlayer != null)
+        {
+            videoPlayer.gameObject.SetActive(true);
+            videoPlayer.Play();
+            videoPlayer.loopPointReached += EndReached;
+        }
+        else
+        {
+            Debug.LogError("VideoPlayer is not set in the GameManager.");
+        }
+    }
+
+    void EndReached(VideoPlayer vp)
+    {
+        SceneManager.LoadScene("fishinglab");
     }
 }

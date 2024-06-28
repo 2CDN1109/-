@@ -15,7 +15,7 @@ public class QuizUIManager : MonoBehaviour
 
     private Image[] choiceImages;
     private TMP_Text[] choiceTexts;
-    private int selectedChoiceIndex = 0;
+    private int selectedChoiceIndex = 1;
 
     void Start()
     {
@@ -39,7 +39,7 @@ public class QuizUIManager : MonoBehaviour
         LoadSprite(question.Choice3ImagePath, choice3Image);
 
         // ‰Šú‘I‘ğó‘Ô‚ğXV
-        selectedChoiceIndex = 0;
+
         UpdateChoiceSelection();
     }
 

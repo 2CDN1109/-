@@ -101,7 +101,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
-    void CheckAnswer(int selectedChoiceIndex)
+    public void CheckAnswer(int selectedChoiceIndex)
     {
         canAnswer = false; // ‰ğ“š’†‚ÍV‚µ‚¢‘I‘ğ‚ª‚Å‚«‚È‚¢‚æ‚¤‚É‚·‚é
 
