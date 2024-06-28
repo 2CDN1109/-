@@ -13,7 +13,7 @@ public class QuizManager : MonoBehaviour
     private List<QuizQuestion> answeredQuestions = new List<QuizQuestion>(); // 解答済みの問題リスト
     private QuizQuestion currentQuestion;
 
-    private int totalQuestions = 5; // 出題する総問題数
+    private int totalQuestions = 8; // 出題する総問題数
     private bool canAnswer = false; // 答えることができるかどうかのフラグ
 
     void Start()
