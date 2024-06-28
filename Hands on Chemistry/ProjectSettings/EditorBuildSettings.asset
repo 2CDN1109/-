@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TimingGame.unity
+    guid: a65d521fea0f987469e5297aad884ede
+  - enabled: 1
+    path: Assets/3D Laboratory Environment with Appratus/Scenes/fishinglab.unity
+    guid: 85c1897c66a0e2141a57699b989f038c
   m_configObjects: {}
