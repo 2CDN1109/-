@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Select.unity
+    guid: 3871d20d02aebe74485988e4939dc5e3
+  - enabled: 1
+    path: Assets/Scenes/Re-Mogura.unity
+    guid: 38850b2c285d0724b845364f57c182ba
+  - enabled: 1
     path: Assets/Scenes/TimingGame.unity
     guid: a65d521fea0f987469e5297aad884ede
   - enabled: 1
