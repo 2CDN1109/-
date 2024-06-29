@@ -86,4 +86,17 @@ public class QuizUIManager : MonoBehaviour
             Debug.LogError("Failed to load sprite at path: " + path);
         }
     }
+
+    public Vector3 GetCursorPosition()
+    {
+        if (cursorFrame != null)
+        {
+            return cursorFrame.transform.position;
+        }
+        else
+        {
+            Debug.LogError("Cursor frame is not set correctly.");
+            return Vector3.zero;
+        }
+    }
 }

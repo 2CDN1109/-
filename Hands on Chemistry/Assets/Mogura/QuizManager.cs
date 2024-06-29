@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class QuizManager : MonoBehaviour
 {
     public string csvFilePath = "Assets/Mogura/quiz.csv";
     public QuizUIManager quizUIManager;
+    public JudgeMovieCtrl judgeMovieCtrl;
+
+    public TMP_Text RestQuestion;
 
     private List<QuizQuestion> questions = new List<QuizQuestion>();
     private List<QuizQuestion> unansweredQuestions;
@@ -15,13 +20,14 @@ public class QuizManager : MonoBehaviour
 
     private int totalQuestions = 8; // 出題する総問題数
     private bool canAnswer = false; // 答えることができるかどうかのフラグ
+    public GameObject Result;       // リザルト画面の表示
 
     void Start()
     {
         LoadQuestionsFromCSV();
+        Result.SetActive(false);    // 結果発表を非表示
         NextQuestion();
         canAnswer = true; // 最初の問題が表示されたら答えることができるようにする
-        Debug.Log("Answered questions: ");
     }
 
     void Update()
@@ -89,6 +95,7 @@ public class QuizManager : MonoBehaviour
             // 問題をランダムに選ぶ
             int randomIndex = Random.Range(0, unansweredQuestions.Count);
             currentQuestion = unansweredQuestions[randomIndex];
+            RestQuestion.text = "あと" + unansweredQuestions.Count + "つ！";
 
             // 問題をUIに表示する処理を呼び出す
             quizUIManager.DisplayQuestion(currentQuestion);
@@ -97,7 +104,9 @@ public class QuizManager : MonoBehaviour
         else
         {
             // 未解答問題がなくなった場合はクイズ終了
+            Result.SetActive(true);
             Debug.Log("All questions answered. Game over.");
+            Invoke("ChangeScene", 2.0f); // 2.0秒後に ChangeScene メソッドを呼び出す
         }
     }
 
@@ -105,25 +114,44 @@ public class QuizManager : MonoBehaviour
     {
         canAnswer = false; // 解答中は新しい選択ができないようにする
 
+        Vector3 cursorPosition = quizUIManager.GetCursorPosition(); // カーソルの位置を取得
+
         if (selectedChoiceIndex == currentQuestion.CorrectChoiceIndex)
         {
             Debug.Log("Correct!");
+            judgeMovieCtrl.JudgmentObj[0].transform.position = new Vector3(cursorPosition.x, judgeMovieCtrl.JudgmentObj[0].transform.position.y, judgeMovieCtrl.JudgmentObj[0].transform.position.z);
+            judgeMovieCtrl.JudgmentObj[0].SetActive(true);
+            judgeMovieCtrl.videoPlayers[0].Play();
             answeredQuestions.Add(currentQuestion); // 解答済みリストに追加する
             unansweredQuestions.Remove(currentQuestion); // 未解答リストから削除する
-            if (answeredQuestions.Count < totalQuestions)
-            {
-                NextQuestion(); // 次の問題を出題する
-            }
-            else
-            {
-                Debug.Log("All questions answered correctly. Game over.");
-            }
+            Invoke("OnCorrectAnswer", 1.7f); // 1.0秒後にOnCorrectAnswerメソッドを呼び出す
         }
         else
         {
             Debug.Log("Incorrect!");
-            // 不正解時の処理を実装する（例えば別の問題を挟んで再度出題する）
-            NextQuestion();
+            judgeMovieCtrl.JudgmentObj[1].transform.position = new Vector3(cursorPosition.x, judgeMovieCtrl.JudgmentObj[1].transform.position.y, judgeMovieCtrl.JudgmentObj[1].transform.position.z);
+            judgeMovieCtrl.JudgmentObj[1].SetActive(true);
+            judgeMovieCtrl.videoPlayers[1].Play();
+            Invoke("OnIncorrectAnswer", 1.7f); // 2.0秒後にOnIncorrectAnswerメソッドを呼び出す
         }
+    }
+
+    void OnCorrectAnswer()
+    {
+        NextQuestion();
+        Invoke("judgeMovieCtrl.HideJudgment", 0.3f); // エフェクトを非表示にする
+        canAnswer = true; // 次の質問が表示されたら解答可能にする
+    }
+
+    void OnIncorrectAnswer()
+    {
+        NextQuestion();
+        Invoke("judgeMovieCtrl.HideJudgment", 0.3f); // エフェクトを非表示にする
+        canAnswer = true; // 次の質問が表示されたら解答可能にする
+    }
+
+    void ChangeScene()
+    {
+        SceneManager.LoadScene("TimingGame");
     }
 }

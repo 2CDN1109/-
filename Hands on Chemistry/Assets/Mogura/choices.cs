@@ -26,7 +26,7 @@ public class choices : MonoBehaviour
     public Image[] ChoiceImages;  //選択肢の画像
     private List<int> numbers = new List<int> { 1, 2, 3, 4 };   //選択肢番号
     private List<int> Problem = new List<int> { }; //未正解問題
-    public GameObject[] JudgmentObj;   //正解不正解の表示-オブジェクト
+    private GameObject[] JudgmentObj;   //正解不正解の表示-オブジェクト
     private VideoPlayer[] videoPlayers; //正解不正解の表示-ビデオ
     public Slider TimeSlider;   //残り時間ゲージ
 //    public Image Character;      //画像
