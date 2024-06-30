@@ -95,7 +95,7 @@ public class TimingGame : MonoBehaviour
 
     private void CheckHit()
     {
-        if (transform.position.y >= hitRangeMin && transform.position.y <= hitRangeMax)
+        if (transform.position.y >= hitRangeMin-1.0f && transform.position.y <= hitRangeMax+1.0f)
         {
             Debug.Log("Hit");
             if (successAudioSource != null)

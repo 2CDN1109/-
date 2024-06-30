@@ -52,7 +52,7 @@ public class QuizManager : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
-                ChangeScene();
+                GameClear();
             }
         }
     }
@@ -107,10 +107,7 @@ public class QuizManager : MonoBehaviour
         }
         else
         {
-            // 未解答問題がなくなった場合はクイズ終了
-            Result.SetActive(true);
-            Debug.Log("All questions answered. Game over.");
-            Invoke("ChangeScene", 2.0f); // 2.0秒後に ChangeScene メソッドを呼び出す
+            GameClear();
         }
     }
 
@@ -152,6 +149,27 @@ public class QuizManager : MonoBehaviour
         NextQuestion();
         Invoke("judgeMovieCtrl.HideJudgment", 0.3f); // エフェクトを非表示にする
         canAnswer = true; // 次の質問が表示されたら解答可能にする
+    }
+
+    void GameClear()
+    {
+        // 未解答問題がなくなった場合はクイズ終了
+        Debug.Log("All questions answered. Game over.");
+        Invoke("ShowResult", 0.5f); // 2.0秒後に ChangeScene メソッドを呼び出す
+        Invoke("ShowLoading", 3.0f); // 2.0秒後に ChangeScene メソッドを呼び出す
+        Invoke("ChangeScene", 6.8f); // 2.0秒後に ChangeScene メソッドを呼び出す
+    }
+
+    void ShowResult()
+    {
+        judgeMovieCtrl.JudgmentObj[2].SetActive(true);
+        judgeMovieCtrl.videoPlayers[2].Play();
+    }
+
+    void ShowLoading()
+    {
+        judgeMovieCtrl.JudgmentObj[3].SetActive(true);
+        judgeMovieCtrl.videoPlayers[3].Play();
     }
 
     void ChangeScene()

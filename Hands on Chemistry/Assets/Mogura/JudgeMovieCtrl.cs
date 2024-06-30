@@ -18,6 +18,7 @@ public class JudgeMovieCtrl : MonoBehaviour
         }
         JudgmentObj[0].SetActive(false);    // 正解アニメーション非表示
         JudgmentObj[1].SetActive(false);    // 不正解アニメーション非表示
+        JudgmentObj[2].SetActive(false);    // 不正解アニメーション非表示
     }
 
 
@@ -32,5 +33,6 @@ public class JudgeMovieCtrl : MonoBehaviour
     {
         JudgmentObj[0].SetActive(false);
         JudgmentObj[1].SetActive(false);
+        JudgmentObj[2].SetActive(false);
     }
 }
