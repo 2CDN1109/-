@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -16398,7 +16398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minX: 4.75
-  maxX: 8.4
+  maxX: 5.7
   serialPortNumber: 3
   baudRate: 9600
 --- !u!1001 &1173604602
@@ -17087,8 +17087,8 @@ RectTransform:
   m_GameObject: {fileID: 1232063603}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -482.16}
-  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3.56, y: 3.56, z: 3.56}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 594348782}
   - {fileID: 731046248}
@@ -17097,7 +17097,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.2}
+  m_AnchoredPosition: {x: 0, y: 223}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1232063605
@@ -22384,7 +22384,7 @@ Canvas:
   m_GameObject: {fileID: 1611593910}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

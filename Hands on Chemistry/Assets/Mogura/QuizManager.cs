@@ -18,7 +18,7 @@ public class QuizManager : MonoBehaviour
     private List<QuizQuestion> answeredQuestions = new List<QuizQuestion>(); // 解答済みの問題リスト
     private QuizQuestion currentQuestion;
 
-    private int totalQuestions = 8; // 出題する総問題数
+//    private int totalQuestions = 8; // 出題する総問題数
     private bool canAnswer = false; // 答えることができるかどうかのフラグ
     public GameObject Result;       // リザルト画面の表示
 
@@ -49,6 +49,10 @@ public class QuizManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 quizUIManager.SelectNextChoice();
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                ChangeScene();
             }
         }
     }

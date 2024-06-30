@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SerialHandler : MonoBehaviour
 {
-    public string portName = "COM4"; // 使用するポートを設定
+    public string portName = "COM3"; // 使用するポートを設定
     public int baudRate = 9600; // Arduinoのボーレートを設定
 
     private SerialPort serialPort;
