@@ -102,16 +102,18 @@ public class TimingGame : MonoBehaviour
             if (successAudioSource != null)
             {
                 successAudioSource.Play();
-                judgeMovieCtrl.JudgmentObj[0].SetActive(true);
                 judgeMovieCtrl.videoPlayers[0].Play();
+                judgeMovieCtrl.JudgmentObj[0].SetActive(true);
+//                Invoke("ShowGood", 0.5f);
             }
             EndGame(true);
         }
         else
         {
             Debug.Log("Miss");
-            judgeMovieCtrl.JudgmentObj[1].SetActive(true);
             judgeMovieCtrl.videoPlayers[1].Play();
+            judgeMovieCtrl.JudgmentObj[1].SetActive(true);
+//            Invoke("ShowBad", 0.5f);
             EndGame(false);
         }
     }
@@ -131,6 +133,7 @@ public class TimingGame : MonoBehaviour
         Debug.Log(gameObject.name + " is ending.");
         SetGameObjectsActive(false);
         OnGameEnded?.Invoke(success);
+
     }
 
     public void SetGameObjectsActive(bool isActive)
@@ -138,5 +141,14 @@ public class TimingGame : MonoBehaviour
         gameObject.SetActive(isActive);
         if (meter != null) meter.SetActive(isActive);
         if (hitZone != null) hitZone.SetActive(isActive);
+    }
+
+    void ShowGood()
+    {
+        judgeMovieCtrl.JudgmentObj[0].SetActive(true);
+    }
+    void ShowBad()
+    {
+        judgeMovieCtrl.JudgmentObj[1].SetActive(true);
     }
 }

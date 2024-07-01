@@ -50,7 +50,7 @@ public class QuizManager : MonoBehaviour
             {
                 quizUIManager.SelectNextChoice();
             }
-            else if (Input.GetKey(KeyCode.S) && Input.GetKeyDown(KeyCode.P))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
                 GameClear();
             }

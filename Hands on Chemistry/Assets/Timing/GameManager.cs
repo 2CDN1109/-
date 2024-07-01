@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text countdownText;
     public TMP_Text afterClearText; // ゲームクリア後のテキスト表示用
     public VideoPlayer videoPlayer; // VideoPlayerの参照
+    public JudgeMovieCtrl judgeMovieCtrl;
 
     void Start()
     {
@@ -123,6 +124,7 @@ public class GameManager : MonoBehaviour
         if (clearImage != null)
         {
             clearImage.gameObject.SetActive(true);
+
         }
         else
         {
@@ -164,8 +166,11 @@ public class GameManager : MonoBehaviour
 
         if (afterClearText != null)
         {
+//            judgeMovieCtrl.videoPlayers[2].Play();
+//            judgeMovieCtrl.JudgmentObj[2].SetActive(true);
             afterClearText.gameObject.SetActive(true);
             afterClearText.text = "決定ボタンで次に進む";
+
 
             while (!Input.GetKeyDown(KeyCode.Space))
             {
@@ -192,17 +197,6 @@ public class GameManager : MonoBehaviour
     }
 
     void EndReached(VideoPlayer vp)
-    {
-        judgeMovieCtrl.videoPlayers[2].Play();
-        invoke("GameClear", 0.3f);
-        Invoke("ChangeScene", 1.7f);
-
-    }
-    void GameClear()
-    {
-        judgeMovieCtrl.JudgmentObj[2].SetActive(true);
-    }
-    void ChangeScene()
     {
         SceneManager.LoadScene("fishinglab");
     }

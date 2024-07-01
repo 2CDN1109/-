@@ -6,9 +6,8 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
     public GameObject myBox; // 自分が動かすオブジェクト
     public GameObject point; // ゲームクリアの目標となるオブジェクト
     public GameObject forceps; // Y回転を増加させるオブジェクト
-    public JudgeMovieCtrl judgeMovieCtrl;
     public Slider progressSlider; // ゲージ用のスライダー
-    public float overlapTimeNeeded = 10f; // ゲームクリアに必要な重なり時間（秒）
+    public float overlapTimeNeeded = 5f; // ゲームクリアに必要な重なり時間（秒）
     public float rotationSpeed = 10f; // Y回転の増加速度
 
     private float overlapTime = 0f;
@@ -31,23 +30,12 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
                     // ゲームクリア処理
                     Debug.Log("Game Clear!");
                     // ゲームクリア時の処理をここに追加
-                    judgeMovieCtrl.videoPlayers[0].Play();
-                    Invoke("ShowClear", 0.1f);
-                    Invoke("ShowFinish", 2.0f);
                 }
             }
             else
             {
                 // 重なっていない場合
-                if (overlapTime > 0f)
-                {
-                    overlapTime -= Time.deltaTime * 3;
-                }
-                else
-                {
-                    overlapTime = 0f;
-                }
-
+                overlapTime = 0f;
             }
 
             // ゲージを更新
@@ -73,15 +61,5 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
             rotation.y += rotationSpeed * Time.deltaTime;
             forceps.transform.rotation = Quaternion.Euler(rotation);
         }
-    }
-
-    void ShowClear()
-    {
-        judgeMovieCtrl.JudgmentObj[0].SetActive(true);
-    }
-    void ShowFinish()
-    {
-        judgeMovieCtrl.JudgmentObj[1].SetActive(true);
-        judgeMovieCtrl.videoPlayers[1].Play();
     }
 }
