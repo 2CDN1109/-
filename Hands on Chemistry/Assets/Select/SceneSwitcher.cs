@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UniRx;
+using System.IO.Ports;
 
 public class SceneSwitcher : MonoBehaviour
 {
     public AudioClip soundEffect; // 効果音ファイルを設定するための変数
     private AudioSource audioSource;
-
     private bool soundPlayed = false; // 効果音が再生されたかどうかのフラグ
+    private SerialPort serialPort;
 
     void Start()
     {
@@ -21,15 +23,36 @@ public class SceneSwitcher : MonoBehaviour
 
         // 効果音ファイルを設定
         audioSource.clip = soundEffect;
+
+        // シリアルポートの初期化
+        serialPort = new SerialPort("COM3", 9600); // 適切なポート名とボーレートを設定
+        serialPort.Open();
+        serialPort.ReadTimeout = 1000;
+
+        // スペースキーの監視
+        Observable.EveryUpdate()
+            .Where(_ => Input.GetKeyDown(KeyCode.Space) && !soundPlayed)
+            .Subscribe(_ => StartCoroutine(PlaySoundAndLoadNextScene()))
+            .AddTo(this);
+
+        // Arduinoからの信号を監視
+        Observable.EveryUpdate()
+            .Where(_ => serialPort.IsOpen)
+            .Select(_ => ReadFromSerialPort())
+            .Where(signal => (signal == "LEFT" || signal == "RIGHT" || signal == "SPACE") && !soundPlayed)
+            .Subscribe(_ => StartCoroutine(PlaySoundAndLoadNextScene()))
+            .AddTo(this);
     }
 
-    void Update()
+    private string ReadFromSerialPort()
     {
-        // スペースキーが押されたときの処理
-        if (Input.GetKeyDown(KeyCode.Space) && !soundPlayed)
+        try
         {
-            // 非同期で効果音を再生し、その後シーン遷移を開始
-            StartCoroutine(PlaySoundAndLoadNextScene());
+            return serialPort.ReadLine();
+        }
+        catch (System.Exception)
+        {
+            return string.Empty;
         }
     }
 
@@ -59,6 +82,14 @@ public class SceneSwitcher : MonoBehaviour
         else
         {
             Debug.Log("次のシーンが存在しません！");
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (serialPort != null && serialPort.IsOpen)
+        {
+            serialPort.Close();
         }
     }
 }
