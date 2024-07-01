@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
     private float overlapTime = 0f;
 
     public JudgeMovieCtrl judgeMovieCtrl;
+    private bool gameCleared = false; // ゲームクリアのフラグ
 
     void Start()
     {
@@ -23,7 +25,7 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
     void Update()
     {
         // myBoxとpointの重なりを判定
-        if (myBox != null && point != null)
+        if (myBox != null && point != null && !gameCleared)
         {
             if (myBox.GetComponent<Renderer>().bounds.Intersects(point.GetComponent<Renderer>().bounds))
             {
@@ -36,11 +38,13 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
                 if (overlapTime >= overlapTimeNeeded)
                 {
                     // ゲームクリア処理
+                    gameCleared = true; // ゲームクリアのフラグを立てる
                     Debug.Log("Game Clear!");
                     // ゲームクリア時の処理をここに追加
                     judgeMovieCtrl.JudgmentObj[0].SetActive(true);
                     judgeMovieCtrl.videoPlayers[0].Play();
-                    Invoke("ShowFinish", 3.0f);
+                    Invoke("ShowFinish", 2.5f);
+                    Invoke("GoTitle", 21.5f);
                 }
             }
             else
@@ -87,5 +91,10 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
         ProgressSlider.SetActive(false);
         judgeMovieCtrl.JudgmentObj[1].SetActive(true);
         judgeMovieCtrl.videoPlayers[1].Play();
+    }
+
+    void GoTitle()
+    {
+        SceneManager.LoadScene("title");
     }
 }
