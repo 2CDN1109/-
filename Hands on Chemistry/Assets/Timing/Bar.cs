@@ -26,6 +26,7 @@ public class TimingGame : MonoBehaviour
     private float hitRangeMax = 0.7f;
 
     private SerialHandler serialHandler;
+    public JudgeMovieCtrl judgeMovieCtrl;
 
     void Start()
     {
@@ -101,12 +102,16 @@ public class TimingGame : MonoBehaviour
             if (successAudioSource != null)
             {
                 successAudioSource.Play();
+                judgeMovieCtrl.JudgmentObj[0].SetActive(true);
+                judgeMovieCtrl.videoPlayers[0].Play();
             }
             EndGame(true);
         }
         else
         {
             Debug.Log("Miss");
+            judgeMovieCtrl.JudgmentObj[1].SetActive(true);
+            judgeMovieCtrl.videoPlayers[1].Play();
             EndGame(false);
         }
     }

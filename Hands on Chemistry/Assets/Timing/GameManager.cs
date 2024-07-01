@@ -193,6 +193,17 @@ public class GameManager : MonoBehaviour
 
     void EndReached(VideoPlayer vp)
     {
+        judgeMovieCtrl.videoPlayers[2].Play();
+        invoke("GameClear", 0.3f);
+        Invoke("ChangeScene", 1.7f);
+
+    }
+    void GameClear()
+    {
+        judgeMovieCtrl.JudgmentObj[2].SetActive(true);
+    }
+    void ChangeScene()
+    {
         SceneManager.LoadScene("fishinglab");
     }
 }
