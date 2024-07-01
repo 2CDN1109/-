@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+using UniRx;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     public VideoPlayer videoPlayer; // VideoPlayerの参照
     public JudgeMovieCtrl judgeMovieCtrl;
 
+    private SerialHandler serialHandler;
+
     void Start()
     {
         foreach (var game in timingGames)
@@ -27,6 +30,17 @@ public class GameManager : MonoBehaviour
             game.SetGameObjectsActive(false);
         }
         ShowGameDescription();
+
+        // シリアルハンドラーのセットアップ
+        serialHandler = FindObjectOfType<SerialHandler>();
+        if (serialHandler != null)
+        {
+            serialHandler.OnMessageReceived.Subscribe(OnSerialMessageReceived);
+        }
+        else
+        {
+            Debug.LogError("SerialHandler not found.");
+        }
     }
 
     void ShowGameDescription()
@@ -34,9 +48,9 @@ public class GameManager : MonoBehaviour
         if (gameDescriptionText != null)
         {
             gameDescriptionText.gameObject.SetActive(true);
-            gameDescriptionText.text = "赤いエリアで　　　　　　　　タイミングよくボタンを押して材料を粉砕しよう！";
+            gameDescriptionText.text = "赤いエリアでタイミングよくボタンを押して材料を粉砕しよう！";
 
-            StartCoroutine(WaitForSpaceKey());
+            StartCoroutine(WaitForInput());
         }
         else
         {
@@ -44,19 +58,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator WaitForSpaceKey()
+    IEnumerator WaitForInput()
     {
         while (!Input.GetKeyDown(KeyCode.Space))
         {
             yield return null;
         }
 
-        if (gameDescriptionText != null)
-        {
-            gameDescriptionText.gameObject.SetActive(false);
-        }
-
-        StartCoroutine(CountdownAndStartGame());
+        HandleSpaceInput();
     }
 
     IEnumerator CountdownAndStartGame()
@@ -88,7 +97,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("All games completed!");
             ShowClearImage();
-            StartCoroutine(WaitForSpaceKeyToShowText());
+            StartCoroutine(WaitForInputToShowText());
         }
     }
 
@@ -124,7 +133,6 @@ public class GameManager : MonoBehaviour
         if (clearImage != null)
         {
             clearImage.gameObject.SetActive(true);
-
         }
         else
         {
@@ -157,7 +165,7 @@ public class GameManager : MonoBehaviour
         StartNextGame();
     }
 
-    IEnumerator WaitForSpaceKeyToShowText()
+    IEnumerator WaitForInputToShowText()
     {
         if (clearImage != null)
         {
@@ -166,17 +174,15 @@ public class GameManager : MonoBehaviour
 
         if (afterClearText != null)
         {
-//            judgeMovieCtrl.videoPlayers[2].Play();
-//            judgeMovieCtrl.JudgmentObj[2].SetActive(true);
             afterClearText.gameObject.SetActive(true);
             afterClearText.text = "決定ボタンで次に進む";
-
 
             while (!Input.GetKeyDown(KeyCode.Space))
             {
                 yield return null;
             }
 
+            HandleSpaceInput();
             afterClearText.gameObject.SetActive(false); // テキストを非表示
         }
         else
@@ -199,5 +205,31 @@ public class GameManager : MonoBehaviour
     void EndReached(VideoPlayer vp)
     {
         SceneManager.LoadScene("fishinglab");
+    }
+
+    private void OnSerialMessageReceived(string message)
+    {
+        if (message.Trim() == "LEFT" || message.Trim() == "RIGHT" || message.Trim() == "SPACE")
+        {
+            HandleSpaceInput();
+        }
+    }
+
+    private void HandleSpaceInput()
+    {
+        if (gameDescriptionText != null && gameDescriptionText.gameObject.activeSelf)
+        {
+            gameDescriptionText.gameObject.SetActive(false);
+            StartCoroutine(CountdownAndStartGame());
+        }
+        else if (clearImage != null && clearImage.gameObject.activeSelf)
+        {
+            clearImage.gameObject.SetActive(false);
+            StartCoroutine(WaitForInputToShowText());
+        }
+        else
+        {
+            Debug.Log("HandleSpaceInput called but no corresponding action found.");
+        }
     }
 }

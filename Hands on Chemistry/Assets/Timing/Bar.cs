@@ -18,7 +18,6 @@ public class TimingGame : MonoBehaviour
     public AudioSource successAudioSource;
     public AudioSource failureAudioSource;
 
-
     public bool isGame2 = false;
     public bool isGame3 = false;
 
@@ -79,7 +78,7 @@ public class TimingGame : MonoBehaviour
 
     private void Update()
     {
-        if (isGameActive && Input.GetKeyUp(KeyCode.Space))
+        if (isGameActive && (Input.GetKeyUp(KeyCode.Space) || InputReceived("SPACE")))
         {
             CheckHit();
         }
@@ -88,7 +87,7 @@ public class TimingGame : MonoBehaviour
     void OnSerialMessageReceived(string message)
     {
         // スイッチが押された（値が0になった）場合にヒットをチェック
-        if (isGameActive && message.Trim() == "BUTTON_PRESSED")
+        if (isGameActive && (message.Trim() == "LEFT" || message.Trim() == "RIGHT" || message.Trim() == "SPACE" || message.Trim() == "BUTTON_PRESSED"))
         {
             CheckHit();
         }
@@ -96,7 +95,7 @@ public class TimingGame : MonoBehaviour
 
     private void CheckHit()
     {
-        if (transform.position.y >= hitRangeMin-1.0f && transform.position.y <= hitRangeMax+1.0f)
+        if (transform.position.y >= hitRangeMin - 1.0f && transform.position.y <= hitRangeMax + 1.0f)
         {
             Debug.Log("Hit");
             if (successAudioSource != null)
@@ -104,7 +103,6 @@ public class TimingGame : MonoBehaviour
                 successAudioSource.Play();
                 judgeMovieCtrl.videoPlayers[0].Play();
                 judgeMovieCtrl.JudgmentObj[0].SetActive(true);
-//                Invoke("ShowGood", 0.5f);
             }
             EndGame(true);
         }
@@ -113,7 +111,6 @@ public class TimingGame : MonoBehaviour
             Debug.Log("Miss");
             judgeMovieCtrl.videoPlayers[1].Play();
             judgeMovieCtrl.JudgmentObj[1].SetActive(true);
-//            Invoke("ShowBad", 0.5f);
             EndGame(false);
         }
     }
@@ -126,14 +123,12 @@ public class TimingGame : MonoBehaviour
         Debug.Log(gameObject.name + " has started.");
     }
 
-
     private void EndGame(bool success)
     {
         isGameActive = false;
         Debug.Log(gameObject.name + " is ending.");
         SetGameObjectsActive(false);
         OnGameEnded?.Invoke(success);
-
     }
 
     public void SetGameObjectsActive(bool isActive)
@@ -143,12 +138,8 @@ public class TimingGame : MonoBehaviour
         if (hitZone != null) hitZone.SetActive(isActive);
     }
 
-    void ShowGood()
+    private bool InputReceived(string input)
     {
-        judgeMovieCtrl.JudgmentObj[0].SetActive(true);
-    }
-    void ShowBad()
-    {
-        judgeMovieCtrl.JudgmentObj[1].SetActive(true);
+        return false; // 必要に応じて実装
     }
 }

@@ -10,7 +10,7 @@ public class ArduinoInput : MonoBehaviour
     public QuizUIManager quizUIManager;
 
     private readonly Subject<string> _inputSubject = new Subject<string>();
-    public float inputCooldown = 0.03f; // 入力のクールダウン時間（秒）
+    public float inputCooldown = 0.005f; // 入力のクールダウン時間（秒）
 
     void Start()
     {
