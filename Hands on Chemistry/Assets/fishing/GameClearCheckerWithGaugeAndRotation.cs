@@ -38,9 +38,9 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
                     // ゲームクリア処理
                     Debug.Log("Game Clear!");
                     // ゲームクリア時の処理をここに追加
-                    ProgressSlider.SetActive(false);
                     judgeMovieCtrl.JudgmentObj[0].SetActive(true);
                     judgeMovieCtrl.videoPlayers[0].Play();
+                    Invoke("ShowFinish", 3.0f);
                 }
             }
             else
@@ -80,5 +80,12 @@ public class GameClearCheckerWithGaugeAndRotation : MonoBehaviour
             rotation.y += rotationSpeed * Time.deltaTime;
             forceps.transform.rotation = Quaternion.Euler(rotation);
         }
+    }
+
+    void ShowFinish() 
+    {
+        ProgressSlider.SetActive(false);
+        judgeMovieCtrl.JudgmentObj[1].SetActive(true);
+        judgeMovieCtrl.videoPlayers[1].Play();
     }
 }
