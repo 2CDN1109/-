@@ -4,6 +4,8 @@ using TMPro;
 
 public class QuizUIManager : MonoBehaviour
 {
+    public AudioSource audioSource1;
+    public AudioSource audioSource2;
     public TMP_Text questionText;
     public TMP_Text choice1Text;
     public TMP_Text choice2Text;
@@ -39,7 +41,6 @@ public class QuizUIManager : MonoBehaviour
         LoadSprite(question.Choice3ImagePath, choice3Image);
 
         // ‰Šú‘I‘ğó‘Ô‚ğXV
-
         UpdateChoiceSelection();
     }
 
@@ -47,16 +48,19 @@ public class QuizUIManager : MonoBehaviour
     {
         selectedChoiceIndex = (selectedChoiceIndex + 1) % 3;
         UpdateChoiceSelection();
+        audioSource1.Play(); // Œø‰Ê‰¹‚ğÄ¶
     }
 
     public void SelectPreviousChoice()
     {
         selectedChoiceIndex = (selectedChoiceIndex - 1 + 3) % 3;
         UpdateChoiceSelection();
+        audioSource1.Play(); // Œø‰Ê‰¹‚ğÄ¶
     }
 
     public int GetSelectedChoiceIndex()
     {
+        audioSource2.Play(); // Œø‰Ê‰¹‚ğÄ¶
         return selectedChoiceIndex;
     }
 

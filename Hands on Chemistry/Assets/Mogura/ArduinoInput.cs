@@ -10,7 +10,7 @@ public class ArduinoInput : MonoBehaviour
     public QuizUIManager quizUIManager;
 
     private readonly Subject<string> _inputSubject = new Subject<string>();
-    public float inputCooldown = 0.005f; // 入力のクールダウン時間（秒）
+//    public float inputCooldown = 0.005f; // 入力のクールダウン時間（秒）
 
     void Start()
     {
@@ -33,7 +33,7 @@ public class ArduinoInput : MonoBehaviour
                 }
             })
             .Where(data => !string.IsNullOrEmpty(data))
-            .ThrottleFirst(TimeSpan.FromSeconds(inputCooldown)) // クールダウンを適用
+//            .ThrottleFirst(TimeSpan.FromSeconds(inputCooldown)) // クールダウンを適用
             .Subscribe(data => _inputSubject.OnNext(data))
             .AddTo(this);
 
